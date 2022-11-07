@@ -1,0 +1,48 @@
+service: abinventory
+frameworkVersion: '3'
+
+custom:
+  tableName: 'inventory-table-${sls:stage}'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ InventoryTable, Arn ]
+  environment:
+    INVENTORY_TABLE: ${self:custom.tableName}
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: '*'
+
+resources:
+  Resources:
+    InventoryTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: restaurantId
+            AttributeType: S
+          - AttributeName: inventoryId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: restaurantId
+            KeyType: HASH
+          - AttributeName: inventoryId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}

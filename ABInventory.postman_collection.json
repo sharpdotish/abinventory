@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "3334c0fe-924d-4276-884e-e13673acbacc",
+		"name": "ABInventory",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13662284"
+	},
+	"item": [
+		{
+			"name": "post to inventory demo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Chicken\",\n    \"restaurantId\": \"restaurant-hongkong\",\n    \"inventoryId\": \"food-chicken\",\n    \"category\": \"meat\",\n    \"current_stock\": 10,\n    \"price\": 20,\n    \"supplier\": {\n        \"name\": \"Poultry Co.\",\n        \"description\": \"Free Range Chicken\"\n    }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/",
+					"protocol": "https",
+					"host": [
+						"eib7prqeai",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"inventory",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post to inventory demo 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Tuna\",\n    \"restaurantId\": \"restaurant-london\",\n    \"inventoryId\": \"food-tuna\",\n    \"category\": \"fish\",\n    \"current_stock\": 15,\n    \"price\": 2000,\n    \"supplier\": {\n        \"name\": \"Deep Sea Horizon\",\n        \"description\": \"The best fish\"\n    }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/",
+					"protocol": "https",
+					"host": [
+						"eib7prqeai",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"inventory",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post to inventory demo 3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Tuna\",\n    \"restaurantId\": \"restaurant-london\",\n    \"inventoryId\": \"food-tuna\",\n    \"category\": \"fish\",\n    \"current_stock\": 15,\n    \"price\": 2000,\n    \"supplier\": {\n        \"name\": \"Deep Sea Horizon\",\n        \"description\": \"The best fish\"\n    }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/",
+					"protocol": "https",
+					"host": [
+						"eib7prqeai",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"inventory",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Inventory by ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/restaurant-london/food-tuna",
+					"protocol": "https",
+					"host": [
+						"eib7prqeai",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"inventory",
+						"restaurant-london",
+						"food-tuna"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get 10 Inventory Items",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/restaurant-london/food-tuna",
+					"protocol": "https",
+					"host": [
+						"eib7prqeai",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"inventory",
+						"restaurant-london",
+						"food-tuna"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
