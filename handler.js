@@ -39,7 +39,7 @@ app.post("/inventory", async function (req, res) {
 /**
  * GET Display the inventory you just created using the id
  */
-app.get("/inventory/:restaurantId/:inventoryId", async function (req, res) {
+app.get("/inventory/item/:restaurantId/:inventoryId", async function (req, res) {
   const params = {
     TableName: INVENTORY_TABLE,
     Key: {
@@ -64,23 +64,38 @@ app.get("/inventory/:restaurantId/:inventoryId", async function (req, res) {
 
 /**
  * display the first 10 inventory items in database, allow pagination to show further items
+ * pass the last evaluated key from the previous request to load the next page of data.
+ * If there is no last evaluated key returned in the result there are no more items to display
+ * @param lastEvaluatedKey - the inventory ID as a string, eg food-cakesmoonlc
  */
-app.get("/inventory/:restaurantId", async function (req, res) {
+app.get("/inventory/:restaurantId/:lastEvaluatedKey?", async function (req, res) {
 
   const getAll = async () => {
 
     let result, accumulated, ExclusiveStartKey;
     const pageSize = 10;
+    const restaurantId = req.params.restaurantId;
 
-    var params = {
+    let params = {
       TableName: INVENTORY_TABLE,
       ExpressionAttributeValues: {
-        ":restaurant": "restaurant-hongkong",//req.body.restaurantId
+        ":restaurant": restaurantId
       },
       KeyConditionExpression: "restaurantId = :restaurant",
-      //Limit: pageSize,
-      //ExclusiveStartKey,
+      Limit: pageSize,      
     };
+
+    // if last eval key is set 
+    if(typeof req.params.lastEvaluatedKey !== 'undefined'){
+
+      let lastKey = req.params.lastEvaluatedKey;
+      
+      params.ExclusiveStartKey = {
+        "restaurantId": {  restaurantId },
+        "inventoryId": {  lastKey },
+      }
+     
+    }
 
     try {
       result = await dynamoDbClient.query(params).promise();
