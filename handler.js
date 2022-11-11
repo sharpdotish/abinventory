@@ -65,24 +65,46 @@ app.get("/inventory/:restaurantId/:inventoryId", async function (req, res) {
 /**
  * display the first 10 inventory items in database, allow pagination to show further items
  */
-app.get("/inventory", async function (req, res) {
-  const getAll = async () => {
-    let result, accumulated, ExclusiveStartKey;
+app.get("/inventory/:restaurantId", async function (req, res) {
 
+  const getAll = async () => {
+
+    let result, accumulated, ExclusiveStartKey;
+    const pageSize = 10;
+
+    var params = {
+      TableName: INVENTORY_TABLE,
+      ExpressionAttributeValues: {
+        ":restaurant": "restaurant-hongkong",//req.body.restaurantId
+      },
+      KeyConditionExpression: "restaurantId = :restaurant",
+      //Limit: pageSize,
+      //ExclusiveStartKey,
+    };
+
+    try {
+      result = await dynamoDbClient.query(params).promise();
+
+      if (result) {        
+        res.json( result );
+      } else {
+        res.status(404).json({ error: "Could not find restaurant data" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+
+    /*
+ 
     do {
-      result = await DynamoDB.query({
-        TableName: INVENTORY_TABLE,
-        ExclusiveStartKey,
-        Limit: 10,
-        KeyConditionExpression: "",
-        ExpressionAttributeValues: {},
-      }).promise();
+      result = await DynamoDB.query(params).promise();
 
       ExclusiveStartKey = result.LastEvaluatedKey;
       accumulated = [...accumulated, ...result.Items];
     } while (result.Items.length || result.LastEvaluatedKey);
 
-    return accumulated;
+    return accumulated; */
   };
 
   getAll().then(console.log).catch(console.error);
@@ -98,7 +120,7 @@ app.put("/inventory-discount/:category", async function (req, res) {
 
   //if(typeof req.params.category !== 'undefined'){
       
-  const bulkUpdate = async () => {
+   const bulkUpdate = async () => {
         
         // retrieve the data items in the specified category
         const { Items = [] } = await dynamoDbClient
