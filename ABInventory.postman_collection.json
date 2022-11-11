@@ -120,7 +120,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/restaurant-london/food-tuna",
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory/item/restaurant-london/food-tuna",
 					"protocol": "https",
 					"host": [
 						"eib7prqeai",
@@ -131,6 +131,7 @@
 					],
 					"path": [
 						"inventory",
+						"item",
 						"restaurant-london",
 						"food-tuna"
 					]
@@ -169,6 +170,38 @@
 						"inventory",
 						"restaurant-london",
 						"food-tuna"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Inventory Discount",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://eib7prqeai.execute-api.us-east-1.amazonaws.com/inventory-discount/food",
+					"protocol": "https",
+					"host": [
+						"eib7prqeai",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"inventory-discount",
+						"food"
 					]
 				}
 			},

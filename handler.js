@@ -70,9 +70,9 @@ app.get("/inventory/item/:restaurantId/:inventoryId", async function (req, res) 
  */
 app.get("/inventory/:restaurantId/:lastEvaluatedKey?", async function (req, res) {
 
-  const getAll = async () => {
+  const getInventorybyRestaurant = async () => {
 
-    let result, accumulated, ExclusiveStartKey;
+    let result;
     const pageSize = 10;
     const restaurantId = req.params.restaurantId;
 
@@ -88,7 +88,7 @@ app.get("/inventory/:restaurantId/:lastEvaluatedKey?", async function (req, res)
     // if last eval key is set 
     if(typeof req.params.lastEvaluatedKey !== 'undefined'){
 
-      let lastKey = req.params.lastEvaluatedKey;
+      const lastKey = req.params.lastEvaluatedKey;
       
       params.ExclusiveStartKey = {
         "restaurantId": restaurantId ,
@@ -96,7 +96,6 @@ app.get("/inventory/:restaurantId/:lastEvaluatedKey?", async function (req, res)
       }
       // res.status(500).json(params); 
     }
-
 
     try {
       result = await dynamoDbClient.query(params).promise();
@@ -110,54 +109,60 @@ app.get("/inventory/:restaurantId/:lastEvaluatedKey?", async function (req, res)
       console.log(error);
       res.status(500).json(error);
     }
-
-    /*
- 
-    do {
-      result = await DynamoDB.query(params).promise();
-
-      ExclusiveStartKey = result.LastEvaluatedKey;
-      accumulated = [...accumulated, ...result.Items];
-    } while (result.Items.length || result.LastEvaluatedKey);
-
-    return accumulated; */
   };
 
-  getAll().then(console.log).catch(console.error);
+  getInventorybyRestaurant().then(console.log).catch(console.error);
 });
 
 /**
  * PUT Applies a discount to all the inventory items of a specific category. If no category is provided, apply it to all items.
  */
-app.put("/inventory-discount/:category", async function (req, res) {
+app.put("/inventory-discount/:category?", async function (req, res) {
   const discountValue = 0.8;
 
   //@todo theres a typo in the category property in postman, its not worth fixing it at this point!
+  const itemCategory = req.params.category;
 
-  //if(typeof req.params.category !== 'undefined'){
-      
-   const bulkUpdate = async () => {
-        
-        // retrieve the data items in the specified category
-        const { Items = [] } = await dynamoDbClient
-          .scan({
-            TableName: INVENTORY_TABLE,
-            FilterExpression: "(#cateory, :cateory)",
-            ExpressionAttributeNames: {
-              "#id": "id",
-            },
-            ExpressionAttributeValues: {
-              ":id": "user",
-            },
-          })
-          .promise();
+  var params = {
+    TableName: INVENTORY_TABLE,  
+  }
 
-    //} else {
+  if(typeof itemCategory !== 'undefined'){
 
-        // get alll data
+    // retrieve the data items in the specified category
+    params.ExpressionAttributeValues = {
+      ":category": itemCategory,       
+    }        
+    params.ExpressionAttributeNames = {
+      "#category": "cateory",
+    }
+    params.FilterExpression = "(#category = :category)"
 
-    //}*/
+    try {
+      // test query to get the items by cat first - see notes below
+      result = await dynamoDbClient.scan(params).promise();
+      res.status(400).json({ params ,  result } );       
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+    }
+    
+  } else {
 
+    // temporary, see below!
+    res.status(500).json( {
+      error: "No cat set",
+    });
+
+  }
+
+    /**
+     * THE UPDATE QUERY, 
+     * @todo replace above scan with update, 
+     * @todo change params to not include filter expression if cat is not set
+     * @todo dowhile loop through all results for each scan / update request until lastEvaluatedKey is not set.
+     * @todo use a calculation in the update expression string to multiply the current price by discountValue. 
+     * (this could later be an additional optional API parammeter but the challenge requirements dont specify that the discount should be dynamic)
     const bulkUpdatePromises = Items.map(async (item) => {
       
       // update each item with the private visibility
@@ -184,6 +189,7 @@ app.put("/inventory-discount/:category", async function (req, res) {
   bulkUpdate();
 
   res.status(200).json({ status: "Discount applied" });
+  */
 });
 
 /**
