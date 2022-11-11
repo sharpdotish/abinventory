@@ -91,11 +91,12 @@ app.get("/inventory/:restaurantId/:lastEvaluatedKey?", async function (req, res)
       let lastKey = req.params.lastEvaluatedKey;
       
       params.ExclusiveStartKey = {
-        "restaurantId": {  restaurantId },
-        "inventoryId": {  lastKey },
+        "restaurantId": restaurantId ,
+        "inventoryId": lastKey,
       }
-     
+      // res.status(500).json(params); 
     }
+
 
     try {
       result = await dynamoDbClient.query(params).promise();
